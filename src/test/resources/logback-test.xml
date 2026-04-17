@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Appender para la consola -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- Formato del Log:
+                 %d{HH:mm:ss.SSS} - Hora
+                 [%thread] - Hilo de ejecución (útil para pruebas paralelas)
+                 %-5level - Nivel de Log (INFO, DEBUG, ERROR) con colores
+                 %logger{36} - Clase que emite el log
+                 %msg%n - El mensaje y salto de línea
+            -->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Nivel de log para nuestro código (com.ionix) -->
+    <logger name="com.ionix" level="DEBUG" />
+
+    <!-- Ocultar o reducir logs innecesarios de librerías de terceros -->
+    <logger name="io.netty" level="WARN" />
+    <logger name="org.apache.http" level="WARN" />
+    <logger name="io.restassured" level="INFO" />
+
+    <!-- Configuración Root (por defecto para todo lo demás) -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+</configuration>

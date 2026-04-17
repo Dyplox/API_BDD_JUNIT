@@ -1,0 +1,71 @@
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version '2.11.2'
+}
+
+group 'com.ionix'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    allureVersion = '2.24.0'
+    junitVersion = '5.10.1'
+    restAssuredVersion = '5.4.0'
+    cucumberVersion = '7.15.0' // Version estable de cucumber
+    dataFakerVersion = '2.0.2'
+    logbackVersion = '1.4.14' // Versión de Logback para Slf4j 2.x
+}
+
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    // --- Pruebas de API ---
+    testImplementation("io.rest-assured:rest-assured:${restAssuredVersion}")
+    testImplementation("io.rest-assured:json-schema-validator:${restAssuredVersion}")
+    testImplementation('com.fasterxml.jackson.core:jackson-databind:2.16.1')
+
+    // --- Aserciones y Logs ---
+    testImplementation('org.assertj:assertj-core:3.25.1')
+    testImplementation('org.hamcrest:hamcrest:2.2')
+    testImplementation("ch.qos.logback:logback-classic:${logbackVersion}") // Reemplaza slf4j-simple
+
+    // --- Generación de Datos ---
+    testImplementation("net.datafaker:datafaker:${dataFakerVersion}")
+
+    // --- Motor de Pruebas (JUnit 5) ---
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    testImplementation("org.junit.platform:junit-platform-suite:1.10.1")
+
+    // --- BDD (Cucumber con JUnit 5) ---
+    testImplementation("io.cucumber:cucumber-java:${cucumberVersion}")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:${cucumberVersion}")
+    testImplementation("io.cucumber:cucumber-picocontainer:${cucumberVersion}")
+
+    // --- Reportería (Allure) ---
+    testImplementation("io.qameta.allure:allure-rest-assured:${allureVersion}")
+    testImplementation("io.qameta.allure:allure-cucumber7-jvm:${allureVersion}")
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty("cucumber.junit-platform.naming-strategy", "long")
+    systemProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager") // Opción recomendada para logs
+}
+
+allure {
+    autoconfigure = true
+    version = "${allureVersion}"
+
+    useJUnit5 {
+        version = "${allureVersion}"
+    }
+}
