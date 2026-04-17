@@ -31,3 +31,28 @@ Característica: Gestión de Usuarios
     Cuando envío la petición para crear el usuario
     Entonces la respuesta debe tener el código de estado 409
     Y el mensaje de error debe indicar que el correo ya existe
+
+  @Smoke
+  Escenario: Consultar usuario existente por ID válido
+    Cuando intento consultar el usuario con id "1"
+    Entonces la respuesta debe tener el código de estado 200
+    Y el correo del usuario debe estar presente
+
+  @Critical
+  Esquema del escenario: Crear usuario con diferentes perfiles de datos
+    Dado que tengo los datos para un nuevo usuario llamado "<nombre>" con username "<username>" y correo "<correo>"
+    Cuando envío la petición para crear el usuario
+    Entonces la respuesta debe tener el código de estado 201
+    Y la respuesta debe contener el id generado, el nombre "<nombre>", username "<username>" y correo "<correo>"
+
+    Ejemplos:
+      | nombre        | username      | correo                  |
+      | Ana García    | ana.garcia    | ana.garcia@ejemplo.com  |
+      | Carlos Ruiz   | carlos.ruiz   | carlos.ruiz@ejemplo.com |
+      | María López   | maria.lopez   | maria.lopez@ejemplo.com |
+
+  @Smoke
+  Escenario: Obtener posts de un usuario existente
+    Cuando consulto los posts del usuario con id "1"
+    Entonces la respuesta debe tener el código de estado 200
+    Y la lista de respuesta no debe estar vacía

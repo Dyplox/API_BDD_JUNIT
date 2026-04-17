@@ -1,31 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <!-- Appender para la consola -->
+    <!-- ═══════════════════════════════════════════════════════
+         APPENDER: CONSOLE (salida en tiempo real con colores)
+         ═══════════════════════════════════════════════════════ -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <!-- Formato del Log:
-                 %d{HH:mm:ss.SSS} - Hora
-                 [%thread] - Hilo de ejecución (útil para pruebas paralelas)
-                 %-5level - Nivel de Log (INFO, DEBUG, ERROR) con colores
-                 %logger{36} - Clase que emite el log
-                 %msg%n - El mensaje y salto de línea
-            -->
+            <!-- %highlight y %cyan usan colores ANSI — solo válidos en consola -->
             <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ═══════════════════════════════════════════════════════
+         APPENDER: FILE (persistencia para análisis post-ejecución)
+         Útil en CI/CD donde los logs de consola no se conservan.
+         Rota por tamaño (10 MB) y por día; retiene 7 archivos.
+         Escribe en build/logs/ (ya ignorado por .gitignore via build/).
+         ═══════════════════════════════════════════════════════ -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>build/logs/test.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>build/logs/test.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>50MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <!-- Sin colores ANSI — los archivos de texto no los soportan -->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
     <!-- Nivel de log para nuestro código (com.ionix) -->
     <logger name="com.ionix" level="DEBUG" />
 
-    <!-- Ocultar o reducir logs innecesarios de librerías de terceros -->
-    <logger name="io.netty" level="WARN" />
+    <!-- Reducir ruido de librerías de terceros -->
+    <logger name="io.netty"       level="WARN" />
     <logger name="org.apache.http" level="WARN" />
     <logger name="io.restassured" level="INFO" />
 
-    <!-- Configuración Root (por defecto para todo lo demás) -->
+    <!-- Root: escribe en CONSOLA y en ARCHIVO simultáneamente -->
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
     </root>
 
 </configuration>

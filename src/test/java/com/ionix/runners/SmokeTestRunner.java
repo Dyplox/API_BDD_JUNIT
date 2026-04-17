@@ -5,27 +5,24 @@ import org.junit.platform.suite.api.IncludeEngines;
 import org.junit.platform.suite.api.SelectClasspathResource;
 import org.junit.platform.suite.api.Suite;
 
+import static io.cucumber.junit.platform.engine.Constants.FILTER_TAGS_PROPERTY_NAME;
 import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
 import static io.cucumber.junit.platform.engine.Constants.PLUGIN_PROPERTY_NAME;
 
 /**
- * Runner MAESTRO: ejecuta TODOS los escenarios de todos los .feature.
+ * Runner de SMOKE: ejecuta solo los escenarios etiquetados con @Smoke o @Critical.
+ * Ideal para pipelines de CI/CD donde se necesita una validación rápida
+ * antes del despliegue (feedback en segundos, no en minutos).
  *
- * Para ejecutar solo un subconjunto de escenarios, tienes dos opciones:
- *
- *   1. Runners específicos (recomendado para CI/CD):
- *      - SmokeTestRunner   → @Smoke | @Critical  (suite rápida)
- *      - RegressionTestRunner → todos los escenarios (suite completa)
- *
- *   2. Filtro dinámico por línea de comandos (Gradle):
- *      ./gradlew test -Ptags="@Critical"
- *      ./gradlew test -Ptags="@Smoke or @Critical"
- *      ./gradlew test -Ptags="not @Negative"
+ * Ejecución:
+ *   ./gradlew test -PtestRunner=SmokeTestRunner
+ * o directamente desde IntelliJ haciendo Run sobre esta clase.
  */
 @Suite
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.ionix.steps")
+@ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "@Smoke or @Critical")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm")
-public class TestRunner {
+public class SmokeTestRunner {
 }

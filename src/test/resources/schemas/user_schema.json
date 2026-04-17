@@ -1,36 +1,45 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$comment": "Contrato de respuesta para GET /users/{id}",
   "type": "object",
   "properties": {
     "id": {
-      "type": "integer"
+      "type": "integer",
+      "minimum": 1,
+      "description": "Identificador único del usuario"
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1,
+      "description": "Nombre completo del usuario"
     },
     "username": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1,
+      "description": "Nombre de usuario único"
     },
     "email": {
-      "type": "string"
+      "type": "string",
+      "format": "email",
+      "description": "Correo electrónico del usuario"
     },
     "address": {
-      "type": "object"
+      "type": "object",
+      "description": "Dirección física del usuario"
     },
     "phone": {
-      "type": "string"
+      "type": "string",
+      "description": "Número de teléfono"
     },
     "website": {
-      "type": "string"
+      "type": "string",
+      "description": "Sitio web del usuario"
     },
     "company": {
-      "type": "object"
+      "type": "object",
+      "description": "Empresa a la que pertenece el usuario"
     }
   },
-  "required": [
-    "id",
-    "name",
-    "username",
-    "email"
-  ]
+  "required": ["id", "name", "username", "email"],
+  "additionalProperties": true
 }

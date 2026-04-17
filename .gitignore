@@ -23,3 +23,11 @@ Thumbs.db
 
 # Variables de entorno o archivos con secretos
 .env
+
+### Allure ###
+# Resultados crudos generados en cada ejecución de tests (no son código fuente)
+allure-results/
+# Reporte HTML generado por 'allure generate' (artefacto de CI, no versionar)
+allure-report/
+# Caché local de la CLI de Allure
+.allure/

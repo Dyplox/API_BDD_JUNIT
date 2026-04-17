@@ -49,20 +49,22 @@ public class UserClient {
     }
 
     /**
-     * Devuelve un Optional<String> con el email si existe y el estado es 200 (OK).
-     * Si no existe o hay error, devuelve Optional.empty() en lugar de un String mágico.
+     * Extrae el email desde una respuesta ya obtenida (sin hacer una nueva petición HTTP).
+     * Devuelve Optional.empty() si el estado no es 200 OK o si el campo email es nulo.
      */
-    @Step("Obtener email de forma segura para el usuario: {userId}")
-    public Optional<String> getUserEmail(String userId) {
-        Response response = getUser(userId);
-
+    public Optional<String> extractEmail(Response response) {
         if (response.statusCode() == HttpStatus.OK.getCode()) {
-            String email = response.jsonPath().getString("email");
-            return Optional.ofNullable(email);
+            return Optional.ofNullable(response.jsonPath().getString("email"));
         }
-        
-        // En lugar de devolver "USUARIO_NO_ENCONTRADO", devolvemos vacío (Empty)
-        // Esto obliga a quien llame la función a manejar la ausencia del dato correctamente.
         return Optional.empty();
+    }
+
+    @Step("Obtener posts del usuario con ID: {userId}")
+    public Response getUserPosts(String userId) {
+        return given()
+                .spec(ApiConfig.getBaseSpec())
+                .pathParam("id", userId)
+                .when()
+                .get(Endpoints.USER_POSTS);
     }
 }

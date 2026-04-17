@@ -1,24 +1,29 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$comment": "Contrato de respuesta para POST /users (201 Created)",
   "type": "object",
   "properties": {
     "id": {
-      "type": "integer"
+      "type": "integer",
+      "minimum": 1,
+      "description": "Identificador único asignado por el servidor al nuevo usuario"
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1,
+      "description": "Nombre completo del usuario creado"
     },
     "username": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1,
+      "description": "Nombre de usuario"
     },
     "email": {
-      "type": "string"
+      "type": "string",
+      "format": "email",
+      "description": "Correo electrónico del usuario creado"
     }
   },
-  "required": [
-    "id",
-    "name",
-    "username",
-    "email"
-  ]
+  "required": ["id", "name", "username", "email"],
+  "additionalProperties": false
 }
